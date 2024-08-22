@@ -139,7 +139,7 @@ func Login(c *gin.Context) {
 		ID:    user.ID,
 		Name:  user.Name,
 		Email: user.Email,
-		Token: user.Token,
+		Token: token,
 	}
 
 	c.JSON(http.StatusOK, gin.H{
