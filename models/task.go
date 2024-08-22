@@ -29,3 +29,15 @@ type InputTask struct {
 	CreatedAt   string `bson:"created_at" json:"created_at" validate:"required"`
 	DeadlineAt  string `bson:"deadline_at" json:"deadline_at" validate:"required"`
 }
+
+type TaskResponse struct {
+	ID           primitive.ObjectID `bson:"_id,omitempty" json:"id"`
+	UserID       primitive.ObjectID `bson:"user_id" json:"user_id"`
+	Title        string             `json:"title"`
+	Description  string             `json:"description"`
+	Status       int                `json:"status"`
+	StatusString string             `json:"status_string"`
+	CreatedAt    time.Time          `bson:"created_at" json:"created_at"`
+	DeadlineAt   time.Time          `bson:"deadline_at" json:"deadline_at"`
+	UpdatedAt    time.Time          `bson:"updated_at" json:"updated_at"`
+}

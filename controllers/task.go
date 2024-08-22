@@ -90,3 +90,99 @@ func CreateTask(c *gin.Context) {
 		"data":    task,
 	})
 }
+
+func MyTasks(c *gin.Context) {
+	getuser, _ := c.Get("user")
+	actualUser, _ := getuser.(models.UserResponse)
+
+	var tasks []models.TaskResponse
+	ctx := context.Background()
+
+	cursor, err := models.TaskCollection().Find(ctx, bson.M{"user_id": actualUser.ID})
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status":  http.StatusInternalServerError,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	for cursor.Next(ctx) {
+		var task models.TaskResponse
+		if err := cursor.Decode(&task); err != nil {
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+				"status":  http.StatusInternalServerError,
+				"message": err.Error(),
+			})
+			return
+		}
+
+		switch task.Status {
+		case 0:
+			task.StatusString = "Waiting List"
+		case 1:
+			task.StatusString = "In Progress"
+		case 2:
+			task.StatusString = "Done"
+		default:
+			task.StatusString = "Deleted"
+		}
+
+		tasks = append(tasks, task)
+	}
+
+	if err := cursor.Err(); err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status":  http.StatusInternalServerError,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  http.StatusOK,
+		"message": "My Tasks",
+		"data":    tasks,
+	})
+}
+
+func MyTask(c *gin.Context) {
+	getuser, _ := c.Get("user")
+	actualUser, _ := getuser.(models.UserResponse)
+
+	id, _ := primitive.ObjectIDFromHex(c.Param("id"))
+
+	var task models.TaskResponse
+	ctx := context.Background()
+
+	filter := bson.M{
+		"_id":     id,
+		"user_id": actualUser.ID,
+	}
+
+	err := models.TaskCollection().FindOne(ctx, filter).Decode(&task)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status":  http.StatusInternalServerError,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	switch task.Status {
+	case 0:
+		task.StatusString = "Waiting List"
+	case 1:
+		task.StatusString = "In Progress"
+	case 2:
+		task.StatusString = "Done"
+	default:
+		task.StatusString = "Deleted"
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  http.StatusOK,
+		"message": "My Task",
+		"data":    task,
+	})
+}
