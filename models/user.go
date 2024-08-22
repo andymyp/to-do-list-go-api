@@ -28,6 +28,13 @@ type InputLogin struct {
 	Password string `json:"password" validate:"required"`
 }
 
+type LoginResponse struct {
+	ID    primitive.ObjectID `json:"id"`
+	Name  string             `json:"name"`
+	Email string             `json:"email"`
+	Token string             `json:"token"`
+}
+
 type UserResponse struct {
 	ID    primitive.ObjectID `json:"id"`
 	Name  string             `json:"name"`
