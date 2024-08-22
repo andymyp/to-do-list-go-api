@@ -10,6 +10,7 @@ func TaskRoute(router *gin.Engine) {
 	base := router.Group("/api")
 	base.Use(middlewares.AuthMiddleware())
 	base.POST("/task", controllers.CreateTask)
-	base.GET("/my-tasks", controllers.MyTasks)
-	base.GET("/my-task/:id", controllers.MyTask)
+	base.GET("/tasks", controllers.GetTasks)
+	base.GET("/task/:id", controllers.GetTask)
+	base.PUT("/task/:id", controllers.UpdateTask)
 }
