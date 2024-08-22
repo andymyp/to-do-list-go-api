@@ -30,6 +30,10 @@ type InputTask struct {
 	DeadlineAt  string `bson:"deadline_at" json:"deadline_at" validate:"required"`
 }
 
+type InputStatusTask struct {
+	Status int `json:"status" validate:"required"`
+}
+
 type TaskResponse struct {
 	ID           primitive.ObjectID `bson:"_id,omitempty" json:"id"`
 	UserID       primitive.ObjectID `bson:"user_id" json:"user_id"`

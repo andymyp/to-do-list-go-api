@@ -271,3 +271,75 @@ func UpdateTask(c *gin.Context) {
 		"data":    task,
 	})
 }
+
+func UpdateStatusTask(c *gin.Context) {
+	var input models.InputStatusTask
+	ctx := context.Background()
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status":  http.StatusBadRequest,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	if err := helpers.ValidateStruct(input); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status":  http.StatusBadRequest,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	id, err := primitive.ObjectIDFromHex(c.Param("id"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status":  http.StatusInternalServerError,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	getuser, _ := c.Get("user")
+	actualUser, _ := getuser.(models.UserResponse)
+
+	filter := bson.M{
+		"_id":     id,
+		"user_id": actualUser.ID,
+	}
+
+	updateTask := bson.M{
+		"$set": bson.M{
+			"status": input.Status,
+		},
+	}
+
+	_, err = models.TaskCollection().UpdateOne(ctx, filter, updateTask)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status":  http.StatusInternalServerError,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	var task models.TaskResponse
+
+	err = models.TaskCollection().FindOne(ctx, bson.M{"_id": id}).Decode(&task)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status":  http.StatusInternalServerError,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	task.StatusString = helpers.StatusString(task.Status)
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  http.StatusOK,
+		"message": "Task Status Updated",
+		"data":    task,
+	})
+}

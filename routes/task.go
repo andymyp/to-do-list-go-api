@@ -13,4 +13,5 @@ func TaskRoute(router *gin.Engine) {
 	base.GET("/tasks", controllers.GetTasks)
 	base.GET("/task/:id", controllers.GetTask)
 	base.PUT("/task/:id", controllers.UpdateTask)
+	base.PUT("/task/status/:id", controllers.UpdateStatusTask)
 }
