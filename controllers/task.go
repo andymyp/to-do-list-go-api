@@ -100,7 +100,14 @@ func GetTasks(c *gin.Context) {
 	var tasks []models.TaskResponse
 	ctx := context.Background()
 
-	cursor, err := models.TaskCollection().Find(ctx, bson.M{"user_id": actualUser.ID})
+	filter := bson.M{
+		"user_id": actualUser.ID,
+		"status": bson.M{
+			"$ne": 3,
+		},
+	}
+
+	cursor, err := models.TaskCollection().Find(ctx, filter)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"status":  http.StatusInternalServerError,
@@ -158,6 +165,9 @@ func GetTask(c *gin.Context) {
 	filter := bson.M{
 		"_id":     id,
 		"user_id": actualUser.ID,
+		"status": bson.M{
+			"$ne": 3,
+		},
 	}
 
 	err = models.TaskCollection().FindOne(ctx, filter).Decode(&task)
@@ -231,6 +241,9 @@ func UpdateTask(c *gin.Context) {
 	filter := bson.M{
 		"_id":     id,
 		"user_id": actualUser.ID,
+		"status": bson.M{
+			"$ne": 3,
+		},
 	}
 
 	updateTask := bson.M{
@@ -307,11 +320,15 @@ func UpdateStatusTask(c *gin.Context) {
 	filter := bson.M{
 		"_id":     id,
 		"user_id": actualUser.ID,
+		"status": bson.M{
+			"$ne": 3,
+		},
 	}
 
 	updateTask := bson.M{
 		"$set": bson.M{
-			"status": input.Status,
+			"status":     input.Status,
+			"updated_at": time.Now(),
 		},
 	}
 
@@ -340,6 +357,65 @@ func UpdateStatusTask(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
 		"message": "Task Status Updated",
+		"data":    task,
+	})
+}
+
+func DeleteTask(c *gin.Context) {
+	ctx := context.Background()
+
+	id, err := primitive.ObjectIDFromHex(c.Param("id"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status":  http.StatusInternalServerError,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	getuser, _ := c.Get("user")
+	actualUser, _ := getuser.(models.UserResponse)
+
+	filter := bson.M{
+		"_id":     id,
+		"user_id": actualUser.ID,
+		"status": bson.M{
+			"$ne": 3,
+		},
+	}
+
+	updateTask := bson.M{
+		"$set": bson.M{
+			"status":     3,
+			"updated_at": time.Now(),
+		},
+	}
+
+	_, err = models.TaskCollection().UpdateOne(ctx, filter, updateTask)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status":  http.StatusInternalServerError,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	var task models.TaskResponse
+
+	err = models.TaskCollection().FindOne(ctx, bson.M{"_id": id}).Decode(&task)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status":  http.StatusInternalServerError,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	task.StatusString = helpers.StatusString(task.Status)
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  http.StatusOK,
+		"message": "Task Deleted",
 		"data":    task,
 	})
 }
