@@ -23,6 +23,12 @@ func UserCollection() *mongo.Collection {
 	return configs.DB.Collection("users")
 }
 
+type InputRegister struct {
+	Name     string `json:"name" validate:"required"`
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required,min=6"`
+}
+
 type InputLogin struct {
 	Email    string `json:"email" validate:"email"`
 	Password string `json:"password" validate:"required"`

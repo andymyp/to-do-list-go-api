@@ -9,6 +9,14 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+// UserProfile 		godoc
+// @Security 			Bearer
+// @Summary      	User profile
+// @Tags         	User
+// @Accept       	json
+// @Produce      	json
+// @Success      	200 "ok"
+// @Router       	/user/profile [get]
 func UserProfile(c *gin.Context) {
 	getuser, _ := c.Get("user")
 	actualUser, _ := getuser.(models.UserResponse)

@@ -12,6 +12,15 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// CreateTask 		godoc
+// @Security 			Bearer
+// @Summary      	Create Task
+// @Tags         	Task
+// @Accept       	json
+// @Produce      	json
+// @Param        	request body models.InputTask true "Payload [Raw]"
+// @Success      	200 "ok"
+// @Router       	/task [post]
 func CreateTask(c *gin.Context) {
 	var input models.InputTask
 	ctx := context.Background()
@@ -93,6 +102,14 @@ func CreateTask(c *gin.Context) {
 	})
 }
 
+// GetTasks 			godoc
+// @Security 			Bearer
+// @Summary      	Get Tasks
+// @Tags         	Task
+// @Accept       	json
+// @Produce      	json
+// @Success      	200 "ok"
+// @Router       	/tasks [get]
 func GetTasks(c *gin.Context) {
 	getuser, _ := c.Get("user")
 	actualUser, _ := getuser.(models.UserResponse)
@@ -146,6 +163,15 @@ func GetTasks(c *gin.Context) {
 	})
 }
 
+// GetTask 				godoc
+// @Security 			Bearer
+// @Summary      	Get Task
+// @Tags         	Task
+// @Accept       	json
+// @Produce      	json
+// @Param        	id path string true "Task ID"
+// @Success      	200 "ok"
+// @Router       	/task/{id} [get]
 func GetTask(c *gin.Context) {
 	getuser, _ := c.Get("user")
 	actualUser, _ := getuser.(models.UserResponse)
@@ -188,6 +214,16 @@ func GetTask(c *gin.Context) {
 	})
 }
 
+// UpdateTask 		godoc
+// @Security 			Bearer
+// @Summary      	Update Task
+// @Tags         	Task
+// @Accept       	json
+// @Produce      	json
+// @Param        	id path string true "Task ID"
+// @Param        	request body models.InputTask true "Payload [Raw]"
+// @Success      	200 "ok"
+// @Router       	/task/{id} [put]
 func UpdateTask(c *gin.Context) {
 	var input models.InputTask
 	ctx := context.Background()
@@ -285,6 +321,16 @@ func UpdateTask(c *gin.Context) {
 	})
 }
 
+// UpdateStatusTask 		godoc
+// @Security 						Bearer
+// @Summary      				Update Status Task
+// @Tags         				Task
+// @Accept       				json
+// @Produce      				json
+// @Param        				id path string true "Task ID"
+// @Param        				request body models.InputStatusTask true "Payload [Raw]"
+// @Success      				200 "ok"
+// @Router       				/task/status/{id} [put]
 func UpdateStatusTask(c *gin.Context) {
 	var input models.InputStatusTask
 	ctx := context.Background()
@@ -361,6 +407,15 @@ func UpdateStatusTask(c *gin.Context) {
 	})
 }
 
+// DeleteTask 		godoc
+// @Security 			Bearer
+// @Summary      	Delete Task
+// @Tags         	Task
+// @Accept       	json
+// @Produce      	json
+// @Param        	id path string true "Task ID"
+// @Success      	200 "ok"
+// @Router       	/task/{id} [delete]
 func DeleteTask(c *gin.Context) {
 	ctx := context.Background()
 

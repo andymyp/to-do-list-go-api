@@ -11,6 +11,14 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+// Register 			godoc
+// @Summary      	Register user
+// @Tags         	Auth
+// @Accept       	json
+// @Produce      	json
+// @Param        	request body models.InputRegister true "Payload [Raw]"
+// @Success      	200 "ok"
+// @Router       	/auth/register [post]
 func Register(c *gin.Context) {
 	var user models.User
 
@@ -71,6 +79,14 @@ func Register(c *gin.Context) {
 	})
 }
 
+// Login 					godoc
+// @Summary      	Login user
+// @Tags         	Auth
+// @Accept       	json
+// @Produce      	json
+// @Param        	request body models.InputLogin true "Payload [Raw]"
+// @Success      	200 "ok"
+// @Router       	/auth/login [post]
 func Login(c *gin.Context) {
 	var input models.InputLogin
 

@@ -1,0 +1,244 @@
+basePath: /api
+definitions:
+  models.InputLogin:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - password
+    type: object
+  models.InputRegister:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        minLength: 6
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  models.InputStatusTask:
+    properties:
+      status:
+        type: integer
+    required:
+    - status
+    type: object
+  models.InputTask:
+    properties:
+      created_at:
+        type: string
+      deadline_at:
+        type: string
+      description:
+        type: string
+      title:
+        type: string
+    required:
+    - created_at
+    - deadline_at
+    - description
+    - title
+    type: object
+host: localhost:3000
+info:
+  contact:
+    email: andymyp1997@gmail.com
+    name: API Support
+  description: Built with Go, Gin, MongoDB, JWT, and Swagger
+  title: To-Do List API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Payload [Raw]
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.InputLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+      summary: Login user
+      tags:
+      - Auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Payload [Raw]
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.InputRegister'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+      summary: Register user
+      tags:
+      - Auth
+  /task:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Payload [Raw]
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.InputTask'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+      security:
+      - Bearer: []
+      summary: Create Task
+      tags:
+      - Task
+  /task/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+      security:
+      - Bearer: []
+      summary: Delete Task
+      tags:
+      - Task
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+      security:
+      - Bearer: []
+      summary: Get Task
+      tags:
+      - Task
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Payload [Raw]
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.InputTask'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+      security:
+      - Bearer: []
+      summary: Update Task
+      tags:
+      - Task
+  /task/status/{id}:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Payload [Raw]
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.InputStatusTask'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+      security:
+      - Bearer: []
+      summary: Update Status Task
+      tags:
+      - Task
+  /tasks:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+      security:
+      - Bearer: []
+      summary: Get Tasks
+      tags:
+      - Task
+  /user/profile:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+      security:
+      - Bearer: []
+      summary: User profile
+      tags:
+      - User
+schemes:
+- http
+- https
+securityDefinitions:
+  Bearer:
+    description: Enter the token with the `Bearer prefix`, e.g. 'Bearer abcde12345'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
