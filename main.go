@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/andymyp/to-do-list-go-api/configs"
+	"github.com/andymyp/to-do-list-go-api/routes"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -35,6 +36,9 @@ func main() {
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"message": "API server is running"})
 	})
+
+	//! All Routes
+	routes.AuthRoute(router)
 
 	APP_PORT := os.Getenv("APP_PORT")
 	APP_PORT = fmt.Sprintf(":%s", APP_PORT)
